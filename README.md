@@ -18,7 +18,7 @@ This repository contains PowerShell scripts designed to restrict the execution o
 ## Installation and Setup
 
 1. **Download the Package**:
-   [Download ProgramRunBlocker.zip](https://github.com/user-attachments/files/17966219/ProgramRunBlocker.zip)
+  [ProgramRunBlocker.zip](https://github.com/user-attachments/files/17966599/ProgramRunBlocker.zip)
 
 2. **Extract Files**:
    - Extract the downloaded `.zip` file into a directory of your choice.
