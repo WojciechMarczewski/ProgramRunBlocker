@@ -50,7 +50,7 @@ $trigger1 = New-ScheduledTaskTrigger -AtStartup
 $trigger2 = New-ScheduledTaskTrigger -Daily -At $time1
 $trigger3 = New-ScheduledTaskTrigger -Daily -At $time2
 
-$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -File `"$scriptPath`" $selectedFolder `"$time1`" `"$time2`" `"$taskName`""
+$action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -File `"$scriptPath`" `"$selectedFolder`" `"$time1`" `"$time2`" `"$taskName`""
 
 # -----------------------------------------------
 
