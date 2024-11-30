@@ -54,7 +54,8 @@ A task is created in the Windows Task Scheduler to automatically enforce the res
 ## Limitations
 The script does not validate the contents of the folder. Ensure you specify the correct directory.
 Users must have administrative privileges to execute the script and register tasks.
-The task relies on Windows' built-in Software Restriction Policies and may not be compatible with older versions of Windows.
+The task relies on Windows' built-in Software Restriction Policies and may not be compatible with older versions of Windows. 
+Scripts do not stop currently running software.
 
 ## Script Details
 
