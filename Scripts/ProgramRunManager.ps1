@@ -7,7 +7,8 @@ param (
 )
 
 
-Start-Transcript -Path ".\TaskBlockerLog.txt"
+$logFilePath = ($env:APPDATA) + ("\ProgramRunBlocker_Log.txt")
+Start-Transcript -Path $logFilePath
 
 # Function to split arguments considering quotes
 function Split-Arguments {
