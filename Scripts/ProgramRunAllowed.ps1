@@ -85,6 +85,3 @@ function Set-SoftwareRestrictionPathRuleAllowed {
 
 # Execute the function for our path
 Set-SoftwareRestrictionPathRuleAllowed -Path $ruleName
-
-# Exit PowerShell
-exit

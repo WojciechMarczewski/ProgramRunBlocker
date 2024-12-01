@@ -2,9 +2,12 @@
 param ( 
     [string]$SelectedFolder, 
     [string]$StartTime = "20:00:00",
-    [string]$EndTime = "01:00:00",
+    [string]$EndTime = "23:59:59",
     [string]$TaskName = "ProgramRunBlockerTask"
 )
+
+
+Start-Transcript -Path "C:\Users\laptop\Documents\Skrypty_po_uruchomieniu\Log.txt"
 
 # Function to split arguments considering quotes
 function Split-Arguments {
@@ -37,22 +40,41 @@ $scriptDirectory = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # Get the current time
 $currentTime = Get-Date
-$currentHour = $currentTime.Hour
-$currentMinute = $currentTime.Minute
-$currentSecond = $currentTime.Second
-$currentHourMinuteSecond = "{0:D2}:{1:D2}:{2:D2}" -f $currentHour, $currentMinute, $currentSecond
+$currentHourMinuteSecond = "{0:D2}:{1:D2}:{2:D2}" -f $currentTime.Hour, $currentTime.Minute, $currentTime.Second
+
+
+
+# Parse the start and end times
+$startTimeSpan = [TimeSpan]::Zero
+$endTimeSpan = [TimeSpan]::Zero
+
+$StartTime = $StartTime.Trim('"')
+$EndTime = $EndTime.Trim('"')
+
+if (![TimeSpan]::TryParseExact($StartTime, "c", $null, [Globalization.DateTimeStyles]::None, [ref]$startTimeSpan)) {
+    Write-Output "Failed to parse StartTime. Please ensure it is in the format HH:mm:ss. Your Input: $StartTime"
+    Stop-Transcript
+    exit
+}
+
+if (![TimeSpan]::TryParseExact($EndTime, "c", $null, [Globalization.DateTimeStyles]::None, [ref]$endTimeSpan)) {
+    Write-Output "Failed to parse EndTime. Please ensure it is in the format HH:mm:ss. Your Input: $EndTime"
+    Stop-Transcript
+    exit
+}
 
 cd $scriptDirectory
 
 # Check if the current time is between StartTime and EndTime
-if (($currentHourMinuteSecond -ge $StartTime) -and ($currentHourMinuteSecond -lt $EndTime)) {
-    Write-Output "The current time is between $StartTime and $EndTime. Running Allowed script."
-    & $allowedScript $SelectedFolder
+if (($currentTime.TimeOfDay -ge $startTimeSpan) -and ($currentTime.TimeOfDay -lt $endTimeSpan)) {
+    Write-Output "The current time is between $StartTime and $EndTime. Running Allowed script." 
+    . $allowedScript $SelectedFolder
 } else {
     Write-Output "The current time is not between $StartTime and $EndTime. Running Disallowed script."
-    & $disallowedScript $SelectedFolder
+    . $disallowedScript $SelectedFolder
 }
 gpupdate /force
 
+Stop-Transcript
 # Exit PowerShell
 exit

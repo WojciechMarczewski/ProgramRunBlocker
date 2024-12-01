@@ -77,6 +77,3 @@ function Set-SoftwareRestrictionPathRuleDisallowed {
 
 # Execute the function for our path
 Set-SoftwareRestrictionPathRuleDisallowed -Path $FolderPath
-
-# Exit PowerShell
-exit
