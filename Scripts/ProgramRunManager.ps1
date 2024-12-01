@@ -7,7 +7,7 @@ param (
 )
 
 
-Start-Transcript -Path "C:\Users\laptop\Documents\Skrypty_po_uruchomieniu\Log.txt"
+Start-Transcript -Path ".\TaskBlockerLog.txt"
 
 # Function to split arguments considering quotes
 function Split-Arguments {
