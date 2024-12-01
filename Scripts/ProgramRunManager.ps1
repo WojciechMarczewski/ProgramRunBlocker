@@ -45,7 +45,7 @@ $currentHourMinuteSecond = "{0:D2}:{1:D2}:{2:D2}" -f $currentHour, $currentMinut
 cd $scriptDirectory
 
 # Check if the current time is between StartTime and EndTime
-if (($currentHourMinuteSecond -ge $StartTime) -or ($currentHourMinuteSecond -lt $EndTime)) {
+if (($currentHourMinuteSecond -ge $StartTime) -and ($currentHourMinuteSecond -lt $EndTime)) {
     Write-Output "The current time is between $StartTime and $EndTime. Running Allowed script."
     & $allowedScript $SelectedFolder
 } else {
