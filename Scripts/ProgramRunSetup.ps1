@@ -46,7 +46,7 @@ $taskName = Show-InputBox -message "Enter the task name. This task will manage b
 $time1 = Show-InputBox -message "Enter start time (HH:MM:SS). This is the time when the script will start blocking access to files in the selected folder." -default "20:00:01"
 $time2 = Show-InputBox -message "Enter end time (HH:MM:SS). This is the time when the script will stop blocking access to files in the selected folder." -default "23:59:59"
 
-$trigger1 = New-ScheduledTaskTrigger -AtStartup
+$trigger1 = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
 $trigger2 = New-ScheduledTaskTrigger -Daily -At $time1
 $trigger3 = New-ScheduledTaskTrigger -Daily -At $time2
 
@@ -61,6 +61,9 @@ if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
 
 # Create new task
 Register-ScheduledTask -TaskName $taskName -Trigger $trigger1, $trigger2, $trigger3 -Action $action -RunLevel Highest -User "SYSTEM"
+
+# Start new Task
+Start-ScheduledTask -TaskName $taskName 
 
 # Show confirmation dialog
 Show-MessageBox -message "The task '$taskName' has been set up successfully. You can check the results in Task Scheduler. The task will run at startups and every day at $time1 and $time2 to enforce the policy."
