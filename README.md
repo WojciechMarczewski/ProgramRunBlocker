@@ -27,7 +27,7 @@ This repository contains PowerShell scripts designed to restrict the execution o
    - Locate and run the `RunSetup.bat` file. This will execute the `ProgramRunSetup.ps1` script with administrative privileges.
    - Follow the on-screen instructions to:
      - Select a folder to block `.exe` files.
-     - Specify the start and end times for the restriction.
+     - Specify the start and end times during which the user will have access to the application.
      - Provide a name for the scheduled task.
 
 4. **Task Scheduler**:
