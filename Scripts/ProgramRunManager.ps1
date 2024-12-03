@@ -6,7 +6,6 @@ param (
     [string]$TaskName = "ProgramRunBlockerTask"
 )
 
-
 $logFilePath = ($env:APPDATA) + ("\ProgramRunBlocker_Log.txt")
 Start-Transcript -Path $logFilePath
 

@@ -62,7 +62,7 @@ function Set-SoftwareRestrictionPathRuleDisallowed {
 
         # Add new rule if no rule found
         if (-not $ruleFound) {
-            $newRuleKey = "$srpPath\0\Paths\{0}" -f [guid]::NewGuid()
+            $newRuleKey = "$srpPath\0\Paths\$([guid]::NewGuid().ToString('B'))"
             New-Item -Path $newRuleKey -Force | Out-Null
             Set-ItemProperty -Path $newRuleKey -Name "ItemData" -Value $Path
             Set-ItemProperty -Path $newRuleKey -Name "SaferFlags" -Value 0x0

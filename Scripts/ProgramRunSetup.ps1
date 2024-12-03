@@ -8,7 +8,7 @@ function Show-FolderPicker {
     if ($folderBrowser.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
         return $folderBrowser.SelectedPath
     } else {
-        return $null
+        exit
     }
 }
 
@@ -21,6 +21,9 @@ function Show-InputBox {
 
     Add-Type -AssemblyName Microsoft.VisualBasic
     $input = [Microsoft.VisualBasic.Interaction]::InputBox($message, "Enter value", $default)
+    if($input -eq "") {
+        exit
+    }
     return $input
 }
 
@@ -46,11 +49,13 @@ $taskName = Show-InputBox -message "Enter the task name. This task will manage b
 $time1 = Show-InputBox -message "Enter start time (HH:MM:SS). This is the time when the script will start blocking access to files in the selected folder." -default "20:00:01"
 $time2 = Show-InputBox -message "Enter end time (HH:MM:SS). This is the time when the script will stop blocking access to files in the selected folder." -default "23:59:59"
 
-$trigger1 = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$trigger1 = New-ScheduledTaskTrigger -AtLogOn 
 $trigger2 = New-ScheduledTaskTrigger -Daily -At $time1
 $trigger3 = New-ScheduledTaskTrigger -Daily -At $time2
 
+$triggers = @($trigger1, $trigger2, $trigger3)
 $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowStyle Hidden -File `"$scriptPath`" `"$selectedFolder`" `"$time1`" `"$time2`" `"$taskName`""
+$principal = New-ScheduledTaskPrincipal -UserId $env:USERNAME -LogonType Interactive -RunLevel Highest
 
 # -----------------------------------------------
 
@@ -58,13 +63,18 @@ $action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-WindowSt
 if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
 }
-
-# Create new task
-Register-ScheduledTask -TaskName $taskName -Trigger $trigger1, $trigger2, $trigger3 -Action $action -RunLevel Highest -User "SYSTEM"
+try{
+# Register the new task 
+Register-ScheduledTask -TaskName $taskName -Trigger $triggers -Action $action -Principal $principal -Settings (New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries) 
 
 # Start new Task
 Start-ScheduledTask -TaskName $taskName 
-
 # Show confirmation dialog
-Show-MessageBox -message "The task '$taskName' has been set up successfully. You can check the results in Task Scheduler. The task will run at startups and every day at $time1 and $time2 to enforce the policy."
+Show-MessageBox -message "The task '$taskName' has been set up successfully.`n You can check the results in Task Scheduler.`n The task will run at startups and every day at $time1 and $time2 to enforce the policy."}
+catch{
+# Capture the error message 
+$errorMessage = $_.Exception.Message
+# Show error message 
+Show-MessageBox -message "There was an error setting up the task '$taskName'. Error: `n$errorMessage" -title "Task Creation Failed"
+}
 exit
